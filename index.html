@@ -1,0 +1,43 @@
+<html>
+<head>
+</head>
+<body>
+<script src="hash.js"></script>
+<script src="key.js"></script>
+<script>
+(async function () {
+  let {
+    privateKey: aPrivate,
+    publicKey: aPublic
+  } = await generateEcKeypair()
+  let {
+    privateKey: bPrivate,
+    publicKey: bPublic
+  } = await generateEcKeypair()
+  let [
+    aSecret, bSecret
+  ] = await Promise.all(
+    deriveSecretKey(aPrivate, bPublic),
+    deriveSecretKey(bPrivate, aPublic)
+  )
+
+  async function keyToHex(key) {
+    let buf = await window.crypto.subtle.exportKey('raw', key)
+    let arr = Array.from(new Uint8Array(buf))
+    let hex = arr.map(n =>
+      n.toString(16).padStart(2, '0'))
+    return hex.join('')
+  }
+
+  let [
+    aHex,
+    bHex
+  ] = await Promise.all(
+    keyToHex(aSecret),
+    keyToHex(bSecret)
+  )
+  console.log(aHex, bHex, aHex === bHex)
+})()
+</script>
+</body>
+</html>
