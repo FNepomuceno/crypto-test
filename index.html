@@ -2,7 +2,6 @@
 <head>
 </head>
 <body>
-<script src="hash.js"></script>
 <script src="key.js"></script>
 <script>
 (async function () {
@@ -16,10 +15,20 @@
   } = await generateEcKeypair()
   let [
     aSecret, bSecret
-  ] = await Promise.all(
+  ] = await Promise.all([
     deriveSecretKey(aPrivate, bPublic),
     deriveSecretKey(bPrivate, aPublic)
-  )
+  ])
+
+  let [
+    aHex,
+    bHex
+  ] = await Promise.all([
+    keyToHex(aSecret),
+    keyToHex(bSecret)
+  ])
+
+  console.log(aHex, bHex, aHex === bHex)
 
   async function keyToHex(key) {
     let buf = await window.crypto.subtle.exportKey('raw', key)
@@ -28,15 +37,6 @@
       n.toString(16).padStart(2, '0'))
     return hex.join('')
   }
-
-  let [
-    aHex,
-    bHex
-  ] = await Promise.all(
-    keyToHex(aSecret),
-    keyToHex(bSecret)
-  )
-  console.log(aHex, bHex, aHex === bHex)
 })()
 </script>
 </body>
