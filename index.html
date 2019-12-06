@@ -5,30 +5,9 @@
 <script src="key.js"></script>
 <script>
 (async function () {
-  let {
-    privateKey: aPrivate,
-    publicKey: aPublic
-  } = await generateEcKeypair()
-  let {
-    privateKey: bPrivate,
-    publicKey: bPublic
-  } = await generateEcKeypair()
-  let [
-    aSecret, bSecret
-  ] = await Promise.all([
-    deriveSecretKey(aPrivate, bPublic),
-    deriveSecretKey(bPrivate, aPublic)
-  ])
+  let aKey = await generateKeyFromPassword('password')
 
-  let [
-    aHex,
-    bHex
-  ] = await Promise.all([
-    keyToHex(aSecret),
-    keyToHex(bSecret)
-  ])
-
-  console.log(aHex, bHex, aHex === bHex)
+  console.log(await keyToHex(aKey))
 
   async function keyToHex(key) {
     let buf = await window.crypto.subtle.exportKey('raw', key)
