@@ -1,4 +1,20 @@
 // Generates a public/private key pair
+async function generateRsaKeypair() {
+  let keypair = window.crypto.subtle.generateKey(
+    {
+      name: 'RSA-OAEP',
+      modulusLength: 4096,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: 'SHA-256'
+    },
+    false,
+    ['encrypt', 'decrypt']
+  )
+
+  return keypair
+}
+
+// Generates a public/private key pair
 async function generateEcKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {

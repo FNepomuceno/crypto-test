@@ -1,20 +1,31 @@
+<!doctype html>
 <html>
 <head>
+<meta charset="UTF-8">
 </head>
 <body>
 <script src="key.js"></script>
+<script src="store.js"></script>
 <script>
 (async function () {
-  let aKey = await generateKeyFromPassword('password')
+  let {
+    privateKey: aPrivate,
+    publicKey: aPublic
+  } = await generateEcKeypair()
 
-  console.log(await keyToHex(aKey))
+  await Promise.all([
+    storeKey(aPrivate),
+    storeKey(aPublic)
+  ])
 
-  async function keyToHex(key) {
-    let buf = await window.crypto.subtle.exportKey('raw', key)
-    let arr = Array.from(new Uint8Array(buf))
-    let hex = arr.map(n =>
-      n.toString(16).padStart(2, '0'))
-    return hex.join('')
+  const exportType = 'pkcs8'
+  console.log(await keyToHex(aPrivate, exportType),
+    await keyToHex(await loadKey('private'), exportType))
+
+  async function keyToHex(key, type) {
+    let buffer = await window.crypto.subtle.exportKey(type, key)
+    let data = Array.from(new Uint8Array(buffer))
+    return data.map(x => x.toString(16).padStart(2, '0')).join('')
   }
 })()
 </script>
