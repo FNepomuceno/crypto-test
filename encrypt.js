@@ -32,3 +32,27 @@ async function decryptAesGcm(key, data, iv) {
   return decryptedData
 }
 
+// Encrypts data with a public RSA-OAEP key
+function encryptRsa(publicKey, data) {
+  let encryptedData = window.crypto.subtle.encrypt(
+    {
+      name: "RSA-OAEP"
+    },
+    publicKey,
+    data
+  )
+  return encryptedData
+}
+
+// Decrypts data with a private RSA-OAEP key
+async function decryptRsa(privateKey, data) {
+  let decryptedData = await window.crypto.subtle.decrypt(
+    {
+      name: "RSA-OAEP"
+    },
+    privateKey,
+    data
+  )
+  return decryptedData
+}
+

@@ -9,27 +9,23 @@
 <script src="encrypt.js"></script>
 <script>
 (async function () {
+  console.log('generating rsa key pair')
   let {
     privateKey: aPrivate,
     publicKey: aPublic
-  } = await generateEcKeypair()
+  } = await generateRsaKeypair()
+  console.log('finished generating rsa key pair')
 
-  let aSecret = await deriveSecretKey(aPrivate, aPublic)
+  let data = window.crypto.getRandomValues(new Uint8Array(16))
+  let encrypted = await encryptRsa(aPublic, data)
+  let decrypted = await decryptRsa(aPrivate, encrypted)
 
-  let aData = window.crypto.getRandomValues(new Uint8Array(64))
-  let {
-    iv: aIv,
-    encryptedData: aEncrypted
-  } = await encryptAesGcm(aSecret, aData)
-  let aDecrypted = await decryptAesGcm(aSecret, aEncrypted, aIv)
-  let aDataHex = bufferToHex(aData)
-  let aEncryptedHex = bufferToHex(aEncrypted)
-  let aDecryptedHex = bufferToHex(aDecrypted)
+  let dataHex = bufferToHex(data)
+  let encryptedHex = bufferToHex(encrypted)
+  let decryptedHex = bufferToHex(decrypted)
 
-  console.log(aPrivate, aPublic)
-  console.log(aSecret)
-  console.log(aDataHex, aEncryptedHex, aDecryptedHex)
-  console.log(aDataHex === aDecryptedHex)
+  console.log(dataHex, encryptedHex, decryptedHex)
+  console.log(dataHex === decryptedHex)
 
   function bufferToHex(buffer) {
     let data = Array.from(new Uint8Array(buffer))
