@@ -1,4 +1,18 @@
-// Generates a public/private key pair
+// Generates an ECDSA public/private key pair for signing
+function generateEcdsaKeypair() {
+  let keypair = window.crypto.subtle.generateKey(
+    {
+      name: "ECDSA",
+      namedCurve: "P-384"
+    },
+    true,
+    ["sign", "verify"]
+  )
+
+  return keypair
+}
+
+// Generates an RSA-OAEP public/private key pair
 function generateRsaKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
@@ -14,14 +28,14 @@ function generateRsaKeypair() {
   return keypair
 }
 
-// Generates a public/private key pair
+// Generates an ECDH public/private key pair
 async function generateEcKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
       name: 'ECDH',
       namedCurve: 'P-384'
     },
-    true,
+    false,
     ['deriveKey']
   )
 
@@ -68,8 +82,7 @@ function deriveSecretKey(privateKey, publicKey) {
       name: 'AES-GCM',
       length: 256
     },
-    // false, // communicate with other party using symmetric key only
-    true, // allow exporting symmetric keys for testing purposes only
+    false,
     ['encrypt', 'decrypt']
   )
   return result
