@@ -1,5 +1,5 @@
 // Generates a public/private key pair
-async function generateRsaKeypair() {
+function generateRsaKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
@@ -39,7 +39,7 @@ async function generateKeyFromPassword(password) {
     ['deriveBits', 'deriveKey']
   )
   let salt = window.crypto.getRandomValues(new Uint8Array(16))
-  let key = await window.crypto.subtle.deriveKey(
+  let key = window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
       salt: salt,
@@ -57,8 +57,8 @@ async function generateKeyFromPassword(password) {
   return key
 }
 
-async function deriveSecretKey(privateKey, publicKey) {
-  let result = await window.crypto.subtle.deriveKey(
+function deriveSecretKey(privateKey, publicKey) {
+  let result = window.crypto.subtle.deriveKey(
     {
       name: 'ECDH',
       public: publicKey
@@ -73,4 +73,4 @@ async function deriveSecretKey(privateKey, publicKey) {
     ['encrypt', 'decrypt']
   )
   return result
-}
+};

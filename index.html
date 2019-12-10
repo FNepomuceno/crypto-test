@@ -6,6 +6,7 @@
 <body>
 <script src="key.js"></script>
 <script src="store.js"></script>
+<script src="encrypt.js"></script>
 <script>
 (async function () {
   let {
@@ -13,17 +14,24 @@
     publicKey: aPublic
   } = await generateEcKeypair()
 
-  await Promise.all([
-    storeKey(aPrivate),
-    storeKey(aPublic)
-  ])
+  let aSecret = await deriveSecretKey(aPrivate, aPublic)
 
-  const exportType = 'pkcs8'
-  console.log(await keyToHex(aPrivate, exportType),
-    await keyToHex(await loadKey('private'), exportType))
+  let aData = window.crypto.getRandomValues(new Uint8Array(64))
+  let {
+    iv: aIv,
+    encryptedData: aEncrypted
+  } = await encryptAesGcm(aSecret, aData)
+  let aDecrypted = await decryptAesGcm(aSecret, aEncrypted, aIv)
+  let aDataHex = bufferToHex(aData)
+  let aEncryptedHex = bufferToHex(aEncrypted)
+  let aDecryptedHex = bufferToHex(aDecrypted)
 
-  async function keyToHex(key, type) {
-    let buffer = await window.crypto.subtle.exportKey(type, key)
+  console.log(aPrivate, aPublic)
+  console.log(aSecret)
+  console.log(aDataHex, aEncryptedHex, aDecryptedHex)
+  console.log(aDataHex === aDecryptedHex)
+
+  function bufferToHex(buffer) {
     let data = Array.from(new Uint8Array(buffer))
     return data.map(x => x.toString(16).padStart(2, '0')).join('')
   }
