@@ -1,5 +1,5 @@
 // Generates a signature of the data given
-function signEcdsa(privateKey, data) {
+export function signEcdsa(privateKey, data) {
   let signature = window.crypto.subtle.sign(
     {
       name: 'ECDSA',
@@ -13,7 +13,7 @@ function signEcdsa(privateKey, data) {
 }
 
 // Verifies the signature
-function verifyEcdsa(publicKey, data, signature) {
+export function verifyEcdsa(publicKey, data, signature) {
   let result = window.crypto.subtle.verify(
     {
       name: 'ECDSA',

@@ -18,7 +18,7 @@ function openDB(name) {
 }
 
 // Deletes database (for testing)
-function removeDB(name) {
+export function removeDB(name) {
   return new Promise((resolve, reject) => {
     let request = window.indexedDB.deleteDatabase(name)
     request.onerror = function (event) {
@@ -50,7 +50,7 @@ async function keyTransaction(callback, transactionType) {
 }
 
 // Loads key from IndexedDB
-function loadKey(type) {
+export function loadKey(type) {
   return keyTransaction((objectStore) => {
     return new Promise((resolve, reject) => {
       let request = objectStore.get(type)
@@ -62,7 +62,7 @@ function loadKey(type) {
 }
 
 // Stores key to IndexedDB
-function storeKey(key) {
+export function storeKey(key) {
   return keyTransaction((objectStore) => {
     return new Promise((resolve, reject) => {
       let obj = { key: key, type: key.type }

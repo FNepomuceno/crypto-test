@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 </head>
 <body>
-<script src="key.js"></script>
-<script src="store.js"></script>
-<script src="encrypt.js"></script>
-<script src="sign.js"></script>
-<script>
+<script type="module" src="key.mjs"></script>
+<script type="module" src="store.mjs"></script>
+<script type="module" src="encrypt.mjs"></script>
+<script type="module" src="sign.mjs"></script>
+<script type="module">
+import { generateEcdsaKeypair } from './key.mjs'
+import { signEcdsa, verifyEcdsa } from './sign.mjs'
+
 (async function () {
   let {
     privateKey: aPrivate,

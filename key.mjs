@@ -1,5 +1,5 @@
 // Generates an ECDSA public/private key pair for signing
-function generateEcdsaKeypair() {
+export function generateEcdsaKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
       name: "ECDSA",
@@ -13,7 +13,7 @@ function generateEcdsaKeypair() {
 }
 
 // Generates an RSA-OAEP public/private key pair
-function generateRsaKeypair() {
+export function generateRsaKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
@@ -29,7 +29,7 @@ function generateRsaKeypair() {
 }
 
 // Generates an ECDH public/private key pair
-async function generateEcKeypair() {
+export async function generateEcKeypair() {
   let keypair = window.crypto.subtle.generateKey(
     {
       name: 'ECDH',
@@ -43,7 +43,7 @@ async function generateEcKeypair() {
 }
 
 // Generates a symmetric key from a given password
-async function generateKeyFromPassword(password) {
+export async function generateKeyFromPassword(password) {
   let enc = new TextEncoder()
   let keyMaterial = await window.crypto.subtle.importKey(
     'raw',
@@ -71,7 +71,7 @@ async function generateKeyFromPassword(password) {
   return key
 }
 
-function deriveSecretKey(privateKey, publicKey) {
+export function deriveSecretKey(privateKey, publicKey) {
   let result = window.crypto.subtle.deriveKey(
     {
       name: 'ECDH',
@@ -86,4 +86,5 @@ function deriveSecretKey(privateKey, publicKey) {
     ['encrypt', 'decrypt']
   )
   return result
-};
+}
+

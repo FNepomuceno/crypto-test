@@ -1,11 +1,6 @@
-// Generates random data
-function makeData(numBytes=16) {
-  return window.crypto.getRandomValues(new Uint8Array(numBytes))
-}
-
 // Encrypts data with a given AES-GCM key
-async function encryptAesGcm(key, data) {
-  let iv = makeData(12)
+export async function encryptAesGcm(key, data) {
+  let iv = window.crypto.getRandomValues(new Uint8Array(12))
   let encryptedData = await window.crypto.subtle.encrypt(
     {
       name: "AES-GCM",
@@ -20,7 +15,7 @@ async function encryptAesGcm(key, data) {
 }
 
 // Decrypts data with a given AES-GCM key
-async function decryptAesGcm(key, data, iv) {
+export async function decryptAesGcm(key, data, iv) {
   let decryptedData = await window.crypto.subtle.decrypt(
     {
       name: "AES-GCM",
@@ -33,7 +28,7 @@ async function decryptAesGcm(key, data, iv) {
 }
 
 // Encrypts data with a public RSA-OAEP key
-function encryptRsa(publicKey, data) {
+export function encryptRsa(publicKey, data) {
   let encryptedData = window.crypto.subtle.encrypt(
     {
       name: "RSA-OAEP"
@@ -45,7 +40,7 @@ function encryptRsa(publicKey, data) {
 }
 
 // Decrypts data with a private RSA-OAEP key
-async function decryptRsa(privateKey, data) {
+export async function decryptRsa(privateKey, data) {
   let decryptedData = await window.crypto.subtle.decrypt(
     {
       name: "RSA-OAEP"
