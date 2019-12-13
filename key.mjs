@@ -28,20 +28,6 @@ export function generateRsaKeypair() {
   return keypair
 }
 
-// Generates an ECDH public/private key pair
-export async function generateEcKeypair() {
-  let keypair = window.crypto.subtle.generateKey(
-    {
-      name: 'ECDH',
-      namedCurve: 'P-384'
-    },
-    false,
-    ['deriveKey']
-  )
-
-  return keypair
-}
-
 // Generates a symmetric key from a given password
 export async function generateKeyFromPassword(password) {
   let enc = new TextEncoder()
@@ -69,22 +55,5 @@ export async function generateKeyFromPassword(password) {
     ['encrypt', 'decrypt']
   )
   return key
-}
-
-export function deriveSecretKey(privateKey, publicKey) {
-  let result = window.crypto.subtle.deriveKey(
-    {
-      name: 'ECDH',
-      public: publicKey
-    },
-    privateKey,
-    {
-      name: 'AES-GCM',
-      length: 256
-    },
-    false,
-    ['encrypt', 'decrypt']
-  )
-  return result
 }
 

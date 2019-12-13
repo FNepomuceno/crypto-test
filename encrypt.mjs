@@ -1,3 +1,39 @@
+// Allow exporting keys when debugging
+const DEBUG = true
+
+// Generates an ECDH public/private key pair
+export async function generateEcdhKeypair() {
+  let keypair = window.crypto.subtle.generateKey(
+    {
+      name: 'ECDH',
+      namedCurve: 'P-384'
+    },
+    DEBUG,
+    ['deriveKey']
+  )
+
+  return keypair
+}
+
+// Derives an AES-GCM secret key between two ECDH key pairs
+export function deriveSecretKey(privateKey, publicKey) {
+  let result = window.crypto.subtle.deriveKey(
+    {
+      name: 'ECDH',
+      public: publicKey
+    },
+    privateKey,
+    {
+      name: 'AES-GCM',
+      length: 256
+    },
+    DEBUG,
+    ['encrypt', 'decrypt']
+  )
+  return result
+}
+
+
 // Encrypts data with a given AES-GCM key
 export async function encryptAesGcm(key, data) {
   let iv = window.crypto.getRandomValues(new Uint8Array(12))
