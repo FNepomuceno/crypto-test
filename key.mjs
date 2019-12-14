@@ -12,22 +12,6 @@ export function generateEcdsaKeypair() {
   return keypair
 }
 
-// Generates an RSA-OAEP public/private key pair
-export function generateRsaKeypair() {
-  let keypair = window.crypto.subtle.generateKey(
-    {
-      name: 'RSA-OAEP',
-      modulusLength: 4096,
-      publicExponent: new Uint8Array([1, 0, 1]),
-      hash: 'SHA-256'
-    },
-    false,
-    ['encrypt', 'decrypt']
-  )
-
-  return keypair
-}
-
 // Generates a symmetric key from a given password
 export async function generateKeyFromPassword(password) {
   let enc = new TextEncoder()

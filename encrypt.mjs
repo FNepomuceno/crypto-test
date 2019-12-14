@@ -63,6 +63,22 @@ export async function decryptAesGcm(key, data, iv) {
   return decryptedData
 }
 
+// Generates an RSA-OAEP public/private key pair
+export function generateRsaKeypair() {
+  let keypair = window.crypto.subtle.generateKey(
+    {
+      name: 'RSA-OAEP',
+      modulusLength: 4096,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: 'SHA-256'
+    },
+    false,
+    ['encrypt', 'decrypt']
+  )
+
+  return keypair
+}
+
 // Encrypts data with a public RSA-OAEP key
 export function encryptRsa(publicKey, data) {
   let encryptedData = window.crypto.subtle.encrypt(

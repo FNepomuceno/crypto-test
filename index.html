@@ -9,8 +9,15 @@
 <script type="module" src="encrypt.mjs"></script>
 <script type="module" src="sign.mjs"></script>
 <script type="module">
-import { generateEcdhKeypair, deriveSecretKey, encryptAesGcm, decryptAesGcm }
-  from './encrypt.mjs'
+import {
+  generateEcdhKeypair,
+  deriveSecretKey,
+  encryptAesGcm,
+  decryptAesGcm,
+  generateRsaKeypair,
+  encryptRsa,
+  decryptRsa
+} from './encrypt.mjs'
 
 async function testEncryptAesGcm() {
   // Generate ECDH public/private keypairs for A and B
@@ -63,7 +70,45 @@ async function testEncryptAesGcm() {
   }
 }
 
-testEncryptAesGcm()
+async function testEncryptRsa() {
+  // Generate RSA public/private keypairs for A and B
+  console.time('generate rsa keypair')
+  let {
+    privateKey: aPrivate,
+    publicKey: aPublic
+  } = await generateRsaKeypair()
+  console.timeEnd('generate rsa keypair')
+
+  // B encrypts data with A's public key
+  let data = window.crypto.getRandomValues(new Uint8Array(16))
+  let encrypted = await encryptRsa(aPublic, data)
+
+  // A decrypts encrypted data their own private key
+  let decrypted = await decryptRsa(aPrivate, encrypted)
+
+  // Tests
+
+  // The original data and the data decrypted by A should be the same
+  let dataHex = bufferToHex(data)
+  let decryptedHex = bufferToHex(decrypted)
+  console.log('Original data:', dataHex)
+  console.log('Decrypted data:', decryptedHex)
+  console.log('Data encrypted/decrpted successfully:',
+    bufferToHex(data) === bufferToHex(decrypted))
+
+  async function keyToHex(key, type) {
+    let buffer = await window.crypto.subtle.exportKey(type, key)
+    return bufferToHex(buffer)
+  }
+
+  function bufferToHex(buffer) {
+    let data = Array.from(new Uint8Array(buffer))
+    return data.map(x => x.toString(16).padStart(2, '0')).join('')
+  }
+}
+
+// testEncryptAesGcm()
+testEncryptRsa()
 </script>
 </body>
 </html>
