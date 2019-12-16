@@ -27,6 +27,11 @@ import {
   signHmac,
   verifyHmac
 } from './sign.mjs'
+import {
+  createUser,
+  verifyPassword,
+  resetPassword
+} from './user.mjs'
 
 async function testSecretEcdh() {
   // Generate ECDH public/private keypairs for A and B
@@ -187,11 +192,35 @@ async function testSignHmac() {
   console.log('Data signed/verified successfully:', result)
 }
 
-testSecretEcdh()
+async function testUser() {
+  let a = await createUser('correct password')
+  let aPassHash1 = a.passwordHash
+  let verifySuccess = await verifyPassword(a, 'correct password')
+  let verifyFailure = await verifyPassword(a, 'incorrect password')
+  a = await resetPassword(a, 'correct password')
+  let aPassHash2 = a.passwordHash
+  let verifySuccess2 = await verifyPassword(a, 'correct password')
+
+  // Tests
+
+  // Verify Password works as it should
+  console.log('Password verify correct password:', verifySuccess)
+  console.log('Password verify incorrect password:', verifyFailure)
+
+  // Password hashes change even with the same password on reset
+  console.log('Original hash:', aPassHash1)
+  console.log('Changed hash: ', aPassHash2)
+  console.log('Hashes changed:', aPassHash1 !== aPassHash2)
+
+  console.log('Password verify correct password after reset:', verifySuccess2)
+}
+
+// testSecretEcdh()
 // testEncryptAesGcm()
 // testEncryptRsa()
 // testSignEcdsa()
 // testSignHmac()
+testUser()
 </script>
 </body>
 </html>

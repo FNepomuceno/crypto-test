@@ -34,6 +34,7 @@ export async function deriveSecretBits(privateKey, publicKey, numBytes=12) {
 }
 
 // AES-GCM secret key
+// ECDH keys can also derive HMAC keys for signing
 
 // Derives an AES-GCM secret key between two ECDH key pairs
 export function deriveSecretKey(privateKey, publicKey) {
