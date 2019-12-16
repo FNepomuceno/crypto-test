@@ -1,17 +1,3 @@
-// Generates an ECDSA public/private key pair for signing
-export function generateEcdsaKeypair() {
-  let keypair = window.crypto.subtle.generateKey(
-    {
-      name: "ECDSA",
-      namedCurve: "P-384"
-    },
-    true,
-    ["sign", "verify"]
-  )
-
-  return keypair
-}
-
 // Generates a symmetric key from a given password
 export async function generateKeyFromPassword(password) {
   let enc = new TextEncoder()

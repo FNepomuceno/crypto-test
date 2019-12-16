@@ -1,3 +1,5 @@
+// ECDH
+
 // Allow exporting keys when debugging
 const DEBUG = true
 
@@ -9,11 +11,29 @@ export async function generateEcdhKeypair() {
       namedCurve: 'P-384'
     },
     DEBUG,
-    ['deriveKey']
+    ['deriveKey', 'deriveBits']
   )
 
   return keypair
 }
+
+// Derives an AES-GCM secret key between two ECDH key pairs
+export async function deriveSecretBits(privateKey, publicKey, numBytes=12) {
+  let buffer = await window.crypto.subtle.deriveBits(
+    {
+      name: 'ECDH',
+      namedCurve: 'P-384',
+      public: publicKey
+    },
+    privateKey,
+    128
+  )
+  let result = new Uint8Array(buffer, 0, numBytes)
+
+  return result
+}
+
+// AES-GCM secret key
 
 // Derives an AES-GCM secret key between two ECDH key pairs
 export function deriveSecretKey(privateKey, publicKey) {
@@ -32,7 +52,6 @@ export function deriveSecretKey(privateKey, publicKey) {
   )
   return result
 }
-
 
 // Encrypts data with a given AES-GCM key
 export async function encryptAesGcm(key, data) {
@@ -62,6 +81,8 @@ export async function decryptAesGcm(key, data, iv) {
   )
   return decryptedData
 }
+
+// RSA-OAEP
 
 // Generates an RSA-OAEP public/private key pair
 export function generateRsaKeypair() {
